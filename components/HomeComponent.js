@@ -5,15 +5,19 @@ import { CAMPSITES } from '../shared/campsites';
 import { PROMOTIONS } from '../shared/promotions';
 import { PARTNERS } from '../shared/partners';
 
-function RenderItem({item}) {
-    if (item) {
+// Didn't use destructured {item} so that I could include another prop.
+function RenderItem(props) {
+    console.log(props);
+    if (props.item) {
+        const bottomMargin = props.lastItem ? 16 : 0;
         return (
             <Card
-                featuredTitle={item.name}
+                featuredTitle={props.item.name}
                 image={require('./images/react-lake.jpg')}
+                containerStyle={{marginBottom:bottomMargin}}
             >
                 <Text style={{margin: 10}}>
-                    {item.description}
+                    {props.item.description}
                 </Text>
             </Card>
         );
@@ -37,13 +41,15 @@ class Home extends Component {
 
     render() {
         return (
-            <ScrollView>
+            <ScrollView style={{backgroundColor:'#eee'}}>
                 <RenderItem
                     item={this.state.campsites.filter(campsite => campsite.featured)[0]} />
                 <RenderItem
                     item={this.state.promotions.filter(promotion => promotion.featured)[0]} />
                 <RenderItem
-                    item={this.state.partners.filter(partner => partner.featured)[0]} />
+                    item={this.state.partners.filter(partner => partner.featured)[0]} 
+                    lastItem={true}
+                />
             </ScrollView>
         );
     }
