@@ -8,6 +8,16 @@ import { View, Platform } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
+import SafeAreaView from 'react-redux';
+import { connect } from 'react-redux';
+import { fetchCampsites, fetchComments, fetchPromotions, fetchPartners } from '../redux/ActionCreators';
+
+const mapDispatchToProps = {
+    fetchCampsites, 
+    fetchComments, 
+    fetchPromotions, 
+    fetchPartners
+};
 
 const HomeNavigator = createStackNavigator(
     {
@@ -102,6 +112,13 @@ class Main extends Component {
         this.setState({selectedCampsite: campsiteId});
     } */
 
+    componentDidMount() {
+        this.props.fetchCampsites();
+        this.props.fetchComments();
+        this.props.fetchPromotions(); 
+        this.props.fetchPartners();
+    }
+
     render() {
         return (
             <View
@@ -115,4 +132,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);
