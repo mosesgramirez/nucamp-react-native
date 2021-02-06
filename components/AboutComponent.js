@@ -18,7 +18,6 @@ class About extends Component {
         title: 'About Us'
     }
 
-    
     render() {
         const renderPartner = ({item}) => {
             return (
