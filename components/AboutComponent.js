@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ScrollView, FlatList, Text } from 'react-native';
+import { ScrollView, FlatList, Text, View, Image } from 'react-native';
 import { Card, ListItem } from 'react-native-elements';
+import Loading from './LoadingComponent';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -19,18 +20,43 @@ class About extends Component {
 
     
     render() {
-        const renderPartner = (props) => {
+        const renderPartner = ({item}) => {
             return (
                 <ListItem
-                    title={props.item.name}
-                    subtitle={props.item.description}
-                    leftAvatar={{ 
-                        source: {uri: baseUrl + props.item.image}, 
-                        size: 'medium'
-                    }}
+                    title={item.name}
+                    subtitle={item.description}
+                    leftAvatar={() => (
+                        <View>
+                          <Image 
+                            source={{uri: baseUrl + item.image}} 
+                          />
+                        </View>
+                    )} 
                 />
             );
         };
+
+        if (this.props.partners.isLoading) {
+            return (
+                <ScrollView style={{backgroundColor:'#eee'}}>
+                <Mission />
+                <Card title="Community Partners" containerStyle={{marginBottom:16}} wrapperStyle={{margin:20, marginTop:0}}>
+                    <Loading />
+                </Card>
+            </ScrollView>
+            )
+        }
+
+        if (this.props.partners.errMess) {
+            return (
+                <ScrollView style={{backgroundColor:'#eee'}}>
+                    <Mission />
+                    <Card title="Community Partners" containerStyle={{marginBottom:16}} wrapperStyle={{margin:20, marginTop:0}}>
+                        <Text>{this.props.partners.errMess}</Text>
+                    </Card>
+            </ScrollView>
+            )
+        }
 
         return (
             <ScrollView style={{backgroundColor:'#eee'}}>
