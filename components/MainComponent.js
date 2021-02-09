@@ -5,6 +5,7 @@ import About from './AboutComponent';
 import Contact from './ContactComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
 import Reservation from './ReservationComponent';
+import Favorites from './FavoritesComponent';
 import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
@@ -142,6 +143,29 @@ const ReservationNavigator = createStackNavigator(
     }
 );
 
+const FavoritesNavigator = createStackNavigator(
+    {
+        Favorites: { screen: Favorites },
+    }, 
+    {
+        defaultNavigationOptions: ({navigation}) => ({
+            headerStyle: {
+                backgroundColor: '#5637DD'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerLeft: <Icon
+                name='heart' 
+                type='font-awesome'
+                iconStyle={styles.stackIcon}
+                onPress={() => navigation.toggleDrawer()}
+            />
+        })
+    }
+);
+
 // SafeAreaView is an IOS-specific component to avoid the camera notch. The default drawer navigator includes this, but since we're overriding it, we now have to include it.
 const CustomDrawerContentComponent = props => (
     <ScrollView>
@@ -194,12 +218,26 @@ const MainNavigator = createDrawerNavigator(
             }
         },
         Reservation: { 
-            drawerLabel: 'Reserve Campsite',
             screen: ReservationNavigator,
             navigationOptions: {
+                drawerLabel: 'Reserve Campsite',
                 drawerIcon: ({tintColor}) => (
                     <Icon   
                         name='tree'
+                        type='font-awesome'
+                        size={24}
+                        color={tintColor}
+                    />
+                )
+            }
+        },
+        Favorites: { 
+            screen: FavoritesNavigator,
+            navigationOptions: {
+                drawerLabel: 'My Favorites',
+                drawerIcon: ({tintColor}) => (
+                    <Icon   
+                        name='heart'
                         type='font-awesome'
                         size={24}
                         color={tintColor}
