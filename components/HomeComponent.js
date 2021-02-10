@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 import { Card } from 'react-native-elements';
 import Loading from './LoadingComponent';
 import { connect } from 'react-redux';
@@ -48,7 +48,31 @@ function RenderItem(props) {
 }
 
 class Home extends Component {
-    // Delete constructor for Redux.
+    constructor(props) {
+        super(props);
+        this.state = {
+            // arbitrary key name
+            scaleValue: new Animated.Value(0)
+        }
+    }
+
+    // arbitrary key name
+    animate() {
+        Animated.timing(
+            this.state.scaleValue,
+            {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true
+            }
+        ).start();
+    }
+
+    // Delete original constructor for Redux.
+
+    componentDidMount() {
+        this.animate();
+    }
 
     static navigationOptions = {
         title: 'Home'
@@ -56,7 +80,11 @@ class Home extends Component {
 
     render() {
         return (
-            <ScrollView style={{backgroundColor:'#eee'}}>
+            <Animated.ScrollView style={{
+                backgroundColor:'#eee', 
+                transform: [{scale: this.state.scaleValue}]
+                }}
+            >
                 <RenderItem
                     item={this.props.campsites.campsites.filter(campsite => campsite.featured)[0]} 
                     isLoading={this.props.campsites.isLoading}    
@@ -73,7 +101,7 @@ class Home extends Component {
                     errMess={this.props.partners.errMess}
                     lastItem={true}
                 />
-            </ScrollView>
+            </Animated.ScrollView>
         );
     }
 }
