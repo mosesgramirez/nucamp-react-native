@@ -48,6 +48,7 @@ function RenderItem(props) {
 }
 
 class Home extends Component {
+    // Deleted original constructor for Redux.
     constructor(props) {
         super(props);
         this.state = {
@@ -56,7 +57,7 @@ class Home extends Component {
         }
     }
 
-    // arbitrary key name
+    // arbitrary function name
     animate() {
         Animated.timing(
             this.state.scaleValue,
@@ -68,7 +69,7 @@ class Home extends Component {
         ).start();
     }
 
-    // Delete original constructor for Redux.
+    
 
     componentDidMount() {
         this.animate();

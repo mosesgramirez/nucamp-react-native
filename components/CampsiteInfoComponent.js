@@ -4,7 +4,7 @@ import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
-
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -24,34 +24,36 @@ function RenderCampsite(props) {
 
     if (campsite) {
         return (
-            <Card
-                featuredTitle={campsite.name}
-                image={{uri: baseUrl + campsite.image}}
-            >
-                <Text style={{margin: 10}}>
-                    {campsite.description}
-                </Text>
-                <View style={styles.cardRow}>
-                    <Icon
-                        name={props.favorite ? 'heart' : 'heart-o'}
-                        type='font-awesome'
-                        color='#f50'
-                        raised
-                        reverse
-                        onPress={() => props.favorite 
-                            ? console.log("Already set as a favorite")
-                            : props.markFavorite()}
-                    />
-                    <Icon
-                        name='pencil'
-                        type='font-awesome'
-                        color='#5637dd'
-                        raised
-                        reverse
-                        onPress={() => props.onShowModal()}
-                    />
-                </View>
-            </Card>
+            <Animatable.View animation='fadeInDown' duration={500} delay={300}>
+                <Card
+                    featuredTitle={campsite.name}
+                    image={{uri: baseUrl + campsite.image}}
+                >
+                    <Text style={{margin: 10}}>
+                        {campsite.description}
+                    </Text>
+                    <View style={styles.cardRow}>
+                        <Icon
+                            name={props.favorite ? 'heart' : 'heart-o'}
+                            type='font-awesome'
+                            color='#f50'
+                            raised
+                            reverse
+                            onPress={() => props.favorite 
+                                ? console.log("Already set as a favorite")
+                                : props.markFavorite()}
+                        />
+                        <Icon
+                            name='pencil'
+                            type='font-awesome'
+                            color='#5637dd'
+                            raised
+                            reverse
+                            onPress={() => props.onShowModal()}
+                        />
+                    </View>
+                </Card>
+            </Animatable.View>
         );
     }
     return <View />;
@@ -78,17 +80,19 @@ function RenderComments({comments}) {
     };
 
     return (
-        <Card 
-            title='Comments'
-            containerStyle={{marginBottom:16}} 
-            wrapperStyle={{margin:20, marginTop:0}}
-        >
-            <FlatList
-                data={comments}
-                renderItem={renderCommentItem}
-                keyExtractor={item => item.id.toString()}
-            />
-        </Card>
+        <Animatable.View animation='fadeInUp' duration={500} delay={300}>
+            <Card 
+                title='Comments'
+                containerStyle={{marginBottom:16}} 
+                wrapperStyle={{margin:20, marginTop:0}}
+            >
+                <FlatList
+                    data={comments}
+                    renderItem={renderCommentItem}
+                    keyExtractor={item => item.id.toString()}
+                />
+            </Card>
+        </Animatable.View>
     )
 }
 
