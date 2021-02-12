@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder  } from 'react-native';
+import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -22,10 +22,19 @@ const mapDispatchToProps = {
 function RenderCampsite(props) {
     const {campsite} = props;
 
+    const viewRef = React.createRef();
+
     const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
+
+        // Animations can be used as methods! 
+        // Also, the promise here is optional, for demonstration purposes.
+        onPanResponderGrant: () => {
+            viewRef.current.jello(500)
+            .then(endState => console.log(endState.finished ? 'Animation finished' : 'Action canceled'));
+        },
         onPanResponderEnd: (e, gestureState) => {
             console.log('pan responder end:', gestureState);
             if (recognizeDrag(gestureState)) {
@@ -58,6 +67,7 @@ function RenderCampsite(props) {
                 animation='fadeInDown' 
                 duration={500} 
                 delay={300}
+                ref={viewRef}
                 {...panResponder.panHandlers}
             >
                 <Card
