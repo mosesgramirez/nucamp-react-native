@@ -3,7 +3,7 @@ import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, Pan
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite, postComment, addFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {

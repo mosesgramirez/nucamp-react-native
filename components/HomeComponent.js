@@ -69,9 +69,7 @@ class Home extends Component {
         ).start();
     }
 
-    
-
-    componentDidMount() {
+     componentDidMount() {
         this.animate();
     }
 

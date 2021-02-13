@@ -4,10 +4,6 @@ import { Card } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
 class Contact extends Component {
-    constructor(props) {
-        super(props);
-        
-    }
 
     static navigationOptions = {
         title: 'Contact Us'
