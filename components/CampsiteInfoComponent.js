@@ -24,20 +24,24 @@ function RenderCampsite(props) {
 
     const viewRef = React.createRef();
 
-    const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
-
+    const isSwipeLeft = ({dx}) => dx < -150;
+    const isSwipeRight = ({dx}) => dx > 150;
+    
     const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-
-        // Animations can be used as methods! 
+        onStartShouldSetPanResponder: () => false,
+        onMoveShouldSetPanResponder: () => true,
+        // Allows for up/down scrolling on the campsite card.
+        onShouldBlockNativeResponder: () => false,
+        // React Animatable animations can be used as methods. 
         // Also, the promise here is optional, for demonstration purposes.
         onPanResponderGrant: () => {
             viewRef.current.jello(500)
             .then(endState => console.log(endState.finished ? 'Animation finished' : 'Action canceled'));
         },
+        // Alternate gesture: swipe left to set favorite.
         onPanResponderEnd: (e, gestureState) => {
             console.log('pan responder end:', gestureState);
-            if (recognizeDrag(gestureState)) {
+            if (isSwipeLeft(gestureState)) {
                 Alert.alert(
                     'Add Favorite',
                     `Are you sure you wish to add ${campsite.name} to Favorites?`,
@@ -56,6 +60,10 @@ function RenderCampsite(props) {
                     ],
                     { cancelable: false }
                 )
+            }
+            // Alternate gesture: swipe right to submit comment.
+            else if (isSwipeRight(gestureState)) {
+                props.onShowModal()
             }
             return true;
         }

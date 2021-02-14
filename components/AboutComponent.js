@@ -50,7 +50,7 @@ class About extends Component {
         if (this.props.partners.errMess) {
             return (
                 <ScrollView style={{backgroundColor:'#eee'}}>
-                    <Animatable.View animation='fadeInDown' duration={2000} delay={1000}>
+                    <Animatable.View animation='fadeInDown' duration={500} delay={300}>
                         <Mission />
                         <Card title="Community Partners" containerStyle={{marginBottom:16}} wrapperStyle={{margin:20, marginTop:0}}>
                             <Text>{this.props.partners.errMess}</Text>
