@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet,
-    Picker, Switch, Button, Modal } from 'react-native';
+    Picker, Switch, Button, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
-import { Alert } from 'react-native';
+import * as Notifications from 'expo-notifications';
+
 
 class Reservation extends Component {
 
@@ -39,7 +40,7 @@ class Reservation extends Component {
                 {
                     text: 'Cancel',
                     onPress: () => {
-                        this.toggleModal();
+                        // this.toggleModal();
                         this.resetForm();
                     },
                     style: 'cancel'
@@ -47,7 +48,8 @@ class Reservation extends Component {
                 {
                     text: 'OK',
                     onPress: () => {
-                        this.toggleModal();
+                        this.presentLocalNotification(this.state.date.toLocaleDateString('en-US'));
+                        // this.toggleModal();
                         this.resetForm();
                     }
                 }
@@ -66,10 +68,39 @@ class Reservation extends Component {
         });
     }
 
+    // ES8
+    async presentLocalNotification(date) {
+        function sendNotification() {
+            Notifications.setNotificationHandler({
+                handleNotification: async => ({
+                    shouldShowAlert: true
+                })
+            });
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Your Campsite Reservation Search',
+                    body: `Search for ${date} requested.`
+                },
+                trigger: null // triggers immediately
+            })
+        }
+
+        // await keyword only works w/in async functions
+        let permissions = await Notifications.getPermissionsAsync();
+        if (!permissions.granted) {
+            permissions = await Notifications.requestPermissionAsync();
+        }
+        if (permissions.granted) {
+            sendNotification();
+        }
+    }
+
+
+
     render() {
         return (
             <ScrollView>
-                <Animatable.View animation='zoomIn' duration={2000} delay={1000}>
+                <Animatable.View animation='zoomIn' duration={500} delay={300}>
                     <View style={styles.formRow}>
                         <Text style={styles.formLabel}>Number of Campers</Text>
                         <Picker
