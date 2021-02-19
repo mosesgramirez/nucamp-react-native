@@ -3,9 +3,10 @@ import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Input, CheckBox, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissons from 'expo-permissions';
+import * as Permissions from 'expo-permissions';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { baseUrl } from '../shared/baseUrl';
+
 
 class LoginTab extends Component {
     constructor(props) {
@@ -120,6 +121,9 @@ class LoginTab extends Component {
     }
 }
 
+
+// REGISTER tab
+
 class RegisterTab extends Component {
     constructor(props) {
         super(props);
@@ -131,7 +135,7 @@ class RegisterTab extends Component {
             lastname: '',
             email: '',
             remember: false,
-            image: baseUrl + 'images/logo.png'
+            imageUrl: baseUrl + 'images/logo.png'
         };
     }
 
@@ -145,6 +149,22 @@ class RegisterTab extends Component {
             />
         )
     } 
+
+    getImageFromCamera = async () => {
+        const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
+            const capturedImage = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                this.setState({imageUrl: capturedImage.uri});
+            }
+        }
+    }
 
     handleRegister() {
         console.log(JSON.stringify(this.state));
@@ -167,6 +187,17 @@ class RegisterTab extends Component {
         return (
             <ScrollView>
                 <View style={styles.container}>
+                    <View style={styles.imageContainer}>
+                        <Image  
+                            source={{uri: this.state.imageUrl}}
+                            loadingIndicatorSource={require('./images/logo.png')}
+                            style={styles.image}
+                        />
+                        <Button
+                            title='Camera'
+                            onPress={this.getImageFromCamera}
+                        />
+                    </View>
                     <Input
                         placeholder="Username"
                         leftIcon={{type: 'font-awesome', name: 'user-o'}}
@@ -234,6 +265,7 @@ class RegisterTab extends Component {
     }
 }
 
+
 const Login = createBottomTabNavigator(
     {
         Login: LoginTab,
@@ -251,23 +283,38 @@ const Login = createBottomTabNavigator(
 
 );
 
+
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        margin: 20
+        margin: 10
     },
     formIcon: {
+        marginLeft: 10,
         marginRight: 10
     },
     formInput: {
-        padding: 10
+        padding: -5
     },
     formCheckbox: {
-        margin: 10,
+        margin: 8,
         backgroundColor: null
     },
     formButton: {
-        margin: 40
+        margin: 20,
+        marginRight: 40,
+        marginLeft: 40
+    },
+    imageContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        margin: 10
+    },
+    image: {
+        width: 60,
+        height: 60
     }
 });
 
