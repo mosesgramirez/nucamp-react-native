@@ -7,7 +7,7 @@ import CampsiteInfo from './CampsiteInfoComponent';
 import Reservation from './ReservationComponent';
 import Favorites from './FavoritesComponent';
 import Login from './LoginComponent';
-import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
+import { View, Platform, StyleSheet, Text, ScrollView, Image, Alert, ToastAndroid } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
@@ -15,6 +15,7 @@ import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
 import { fetchCampsites, fetchComments, fetchPromotions, fetchPartners } from '../redux/ActionCreators';
 import { connect } from 'react-redux';
+import Netinfo from '@react-native-community/netinfo';
 
 const mapDispatchToProps = {
     fetchCampsites, 
@@ -320,20 +321,51 @@ const MainNavigator = createDrawerNavigator(
 
 const AppNavigator = createAppContainer(MainNavigator);
 
+
+// *--------- MAIN  ---------*
+
 class Main extends Component {
     
-    /* 
-    // Moved constructor and state to Directory component.
-    // Navigator will be handling this now.
-        onCampsiteSelect(campsiteId) {
-        this.setState({selectedCampsite: campsiteId});
-    } */
-
     componentDidMount() {
         this.props.fetchCampsites();
         this.props.fetchComments();
         this.props.fetchPromotions(); 
         this.props.fetchPartners();
+
+        Netinfo.fetch().then(connectionInfo => {
+            (Platform.OS === 'ios')
+                ? Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
+                : ToastAndroid.show('Initial Network Connectivity Type: ' + connectionInfo.type, ToastAndroid.LONG);
+        });
+
+        this.unsubscribeNetinfo = Netinfo.addEventListener(connectionInfo => {
+            this.handleConnectivityChange(connectionInfo);
+        });
+    }
+
+    componentWillUnmount() {
+        this.unsubscribeNetinfo();
+    }
+
+    handleConnectivityChange = connectionInfo => {
+        let connectionMsg = 'You are now connected to an active network.';
+        switch (connectionInfo.type) {
+            case 'none':
+                connectionMsg = 'No network connection is active.';
+                break;
+            case 'unknown':
+                connectionMsg = 'No network connection is unknown.';
+                break;
+            case 'cellular':
+                connectionMsg = 'You are now connected to a cellular network.';
+                break;
+            case 'wifi':
+                connectionMsg = 'You are now connected to a WiFi network.';
+                break;
+        }
+        (Platform.OS === 'ios')
+                ? Alert.alert('Connection change:', connectionMsg)
+                : ToastAndroid.show(connectionMsg, ToastAndroid.LONG);
     }
 
     render() {
