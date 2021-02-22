@@ -13,7 +13,6 @@ const mapStateToProps = state => {
 }
 
 class About extends Component {
-    // Deleted constructor and state info when setting up Redux
 
     static navigationOptions = {
         title: 'About Us'
@@ -25,13 +24,7 @@ class About extends Component {
                 <ListItem
                     title={item.name}
                     subtitle={item.description}
-                    leftAvatar={() => (
-                        <View>
-                          <Image 
-                            source={{uri: baseUrl + item.image}} 
-                          />
-                        </View>
-                    )} 
+                    leftAvatar={{source: {uri: baseUrl + item.image}} }
                 />
             );
         };
